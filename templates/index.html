@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TruthLens AI — AI-Powered Fake News & Credibility Detection</title>
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Top Navigation -->
+        <header class="app-header">
+            <div class="header-container">
+                <div class="brand">
+                    <div class="brand-icon">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div class="brand-text">
+                        <span class="brand-name">TruthLens <span class="brand-badge">AI</span></span>
+                        <span class="brand-tagline">Credibility & Misinformation Detection</span>
+                    </div>
+                </div>
+
+                <nav class="nav-tabs" role="tablist">
+                    <button class="nav-tab active" data-tab="tab-analyze" role="tab" aria-selected="true">
+                        <i class="fa-solid fa-magnifying-glass-chart"></i> Analyze
+                    </button>
+                    <button class="nav-tab" data-tab="tab-dashboard" role="tab" aria-selected="false">
+                        <i class="fa-solid fa-chart-pie"></i> Dashboard
+                    </button>
+                    <button class="nav-tab" data-tab="tab-history" role="tab" aria-selected="false">
+                        <i class="fa-solid fa-clock-rotate-left"></i> History
+                    </button>
+                    <button class="nav-tab" data-tab="tab-methodology" role="tab" aria-selected="false">
+                        <i class="fa-solid fa-brain"></i> Methodology
+                    </button>
+                </nav>
+
+                <div class="header-actions">
+                    <button id="themeToggleBtn" class="icon-btn" title="Toggle Dark/Light Mode" aria-label="Toggle theme">
+                        <i class="fa-solid fa-sun" id="themeIcon"></i>
+                    </button>
+                    <a href="#about" class="model-status-pill" id="headerModelStatus" title="Active Model">
+                        <span class="status-indicator live"></span>
+                        <span class="status-text">Model Active</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Container -->
+        <main class="main-content">
+            
+            <!-- Global Estimations Notice Banner -->
+            <div class="disclaimer-banner">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>
+                    <strong>Model Transparency Notice:</strong> Predictions are statistical AI estimates and linguistic analyses, not definitive proof of truth or falsehood. Always cross-reference with primary news wires and certified fact-checkers.
+                </span>
+            </div>
+
+            <!-- TAB 1: ANALYZE -->
+            <section id="tab-analyze" class="tab-pane active">
+                <div class="analyze-grid">
+                    
+                    <!-- Left: Input Form -->
+                    <div class="card input-card">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title"><i class="fa-solid fa-newspaper"></i> Analyze News Content</h2>
+                                <p class="card-subtitle">Enter a headline and article body to evaluate linguistic credibility markers</p>
+                            </div>
+                        </div>
+
+                        <!-- Sample presets -->
+                        <div class="samples-bar">
+                            <span class="samples-label"><i class="fa-solid fa-flask"></i> Try Sample:</span>
+                            <div class="sample-pills" id="samplePillsContainer">
+                                <button class="sample-pill" data-sample="real-energy">
+                                    <i class="fa-solid fa-circle-check text-success"></i> Real: Clean Energy
+                                </button>
+                                <button class="sample-pill" data-sample="fake-alien">
+                                    <i class="fa-solid fa-circle-xmark text-danger"></i> Fake: Airport Aliens
+                                </button>
+                                <button class="sample-pill" data-sample="real-ai">
+                                    <i class="fa-solid fa-circle-check text-success"></i> Real: AI Regulation
+                                </button>
+                                <button class="sample-pill" data-sample="fake-cure">
+                                    <i class="fa-solid fa-circle-xmark text-danger"></i> Fake: Miracle Cure
+                                </button>
+                            </div>
+                        </div>
+
+                        <form id="analyzeForm" class="analyze-form">
+                            <div class="form-group">
+                                <div class="form-label-row">
+                                    <label for="headlineInput">Headline / Title <span class="required">*</span></label>
+                                    <span class="char-count" id="headlineCount">0 / 500</span>
+                                </div>
+                                <input 
+                                    type="text" 
+                                    id="headlineInput" 
+                                    name="headline" 
+                                    placeholder="e.g. Senate Passes Bipartisan Clean Water and Infrastructure Bill"
+                                    maxlength="500" 
+                                    required 
+                                    autocomplete="off"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <div class="form-label-row">
+                                    <label for="contentInput">Article Text / Body</label>
+                                    <div class="text-counts">
+                                        <span id="wordCount">0 words</span>
+                                        <span class="count-divider">•</span>
+                                        <span id="contentCount">0 / 50,000</span>
+                                    </div>
+                                </div>
+                                <textarea 
+                                    id="contentInput" 
+                                    name="content" 
+                                    rows="9" 
+                                    placeholder="Paste full article text, body copy, or social media claim here for deep linguistic and source attribution analysis..."
+                                    maxlength="50000"
+                                ></textarea>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" id="clearFormBtn" class="btn btn-secondary">
+                                    <i class="fa-solid fa-rotate-left"></i> Clear Fields
+                                </button>
+                                <button type="submit" id="submitAnalyzeBtn" class="btn btn-primary">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i> 
+                                    <span class="btn-text">Analyze Credibility</span>
+                                    <span class="spinner" style="display: none;"></span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Right: Results Panel -->
+                    <div class="card result-card" id="resultCard">
+                        
+                        <!-- Empty State Before Analysis -->
+                        <div class="empty-state" id="resultEmptyState">
+                            <div class="empty-icon">
+                                <i class="fa-solid fa-shield-virus"></i>
+                            </div>
+                            <h3>Ready to Analyze</h3>
+                            <p>Input a news headline and article text or choose one of the curated presets above to see the real-time AI credibility classification, confidence metrics, and stylistic breakdown.</p>
+                            <div class="feature-checklist">
+                                <div><i class="fa-solid fa-check"></i> Scikit-Learn Machine Learning Model</div>
+                                <div><i class="fa-solid fa-check"></i> Credibility Score & Confidence Meter</div>
+                                <div><i class="fa-solid fa-check"></i> Feature Attribution & Salient Keywords</div>
+                                <div><i class="fa-solid fa-check"></i> Clickbait & Sensationalism Detection</div>
+                            </div>
+                        </div>
+
+                        <!-- Active Results Content (Hidden until analysis runs) -->
+                        <div class="results-content" id="resultActiveContent" style="display: none;">
+                            
+                            <!-- Header Verdict -->
+                            <div class="result-header">
+                                <div class="verdict-banner" id="verdictBanner">
+                                    <div class="verdict-icon-wrap" id="verdictIconWrap">
+                                        <i class="fa-solid fa-shield-check" id="verdictIcon"></i>
+                                    </div>
+                                    <div class="verdict-meta">
+                                        <span class="verdict-label" id="verdictCategory">Likely Credible</span>
+                                        <h3 class="verdict-title" id="verdictTitle">Real News</h3>
+                                    </div>
+                                </div>
+
+                                <div class="score-radial-box">
+                                    <div class="score-circle">
+                                        <svg viewBox="0 0 100 100" class="gauge-svg">
+                                            <circle class="gauge-bg" cx="50" cy="50" r="42"></circle>
+                                            <circle class="gauge-fill" id="gaugeFill" cx="50" cy="50" r="42" stroke-dasharray="264" stroke-dashoffset="60"></circle>
+                                        </svg>
+                                        <div class="gauge-text">
+                                            <span class="gauge-number" id="credibilityScoreVal">88</span>
+                                            <span class="gauge-unit">/100</span>
+                                        </div>
+                                    </div>
+                                    <span class="score-subtext">Credibility Score</span>
+                                </div>
+                            </div>
+
+                            <!-- Confidence Meter -->
+                            <div class="metrics-row">
+                                <div class="metric-pill">
+                                    <span class="metric-name">Model Confidence</span>
+                                    <strong class="metric-value" id="confidenceVal">94.2%</strong>
+                                </div>
+                                <div class="metric-pill">
+                                    <span class="metric-name">Stylistic Risk Score</span>
+                                    <strong class="metric-value" id="riskScoreVal">Low (12%)</strong>
+                                </div>
+                                <div class="metric-pill">
+                                    <span class="metric-name">Attribution Sourcing</span>
+                                    <strong class="metric-value" id="attributionVal">Verified Terms</strong>
+                                </div>
+                            </div>
+
+                            <!-- Probability Split Bar -->
+                            <div class="prob-section">
+                                <div class="prob-labels">
+                                    <span><i class="fa-solid fa-circle-check text-success"></i> Real Probability: <strong id="probRealVal">88.5%</strong></span>
+                                    <span><i class="fa-solid fa-circle-xmark text-danger"></i> Fake Probability: <strong id="probFakeVal">11.5%</strong></span>
+                                </div>
+                                <div class="prob-bar">
+                                    <div class="prob-fill-real" id="probRealBar" style="width: 88.5%;"></div>
+                                    <div class="prob-fill-fake" id="probFakeBar" style="width: 11.5%;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Salient Feature Attribution -->
+                            <div class="attribution-box">
+                                <h4><i class="fa-solid fa-magnifying-glass-chart"></i> Salient Key Indicators</h4>
+                                <div class="keywords-columns">
+                                    <div class="keyword-col">
+                                        <span class="col-heading text-success"><i class="fa-solid fa-arrow-trend-up"></i> Supporting Credibility</span>
+                                        <div class="tags-container" id="realTagsContainer">
+                                            <!-- Dynamic Real tags -->
+                                        </div>
+                                    </div>
+                                    <div class="keyword-col">
+                                        <span class="col-heading text-danger"><i class="fa-solid fa-arrow-trend-down"></i> Misinformation Flags</span>
+                                        <div class="tags-container" id="fakeTagsContainer">
+                                            <!-- Dynamic Fake tags -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Stylistic & Linguistic Breakdown -->
+                            <div class="linguistic-summary">
+                                <h4><i class="fa-solid fa-spell-check"></i> Linguistic & Stylistic Analysis</h4>
+                                <ul class="explanation-list" id="explanationList">
+                                    <!-- Dynamic explanation bullets -->
+                                </ul>
+                            </div>
+
+                            <!-- Contextual Action Buttons -->
+                            <div class="result-actions">
+                                <button type="button" class="btn btn-primary btn-sm" id="shareAnalysisBtn">
+                                    <i class="fa-solid fa-share-nodes"></i> Share Report
+                                </button>
+                                <button type="button" class="btn btn-outline" id="viewHistoryFromAnalysisBtn">
+                                    <i class="fa-solid fa-clock-rotate-left"></i> View in History
+                                </button>
+                                <button type="button" class="btn btn-outline" id="copyAnalysisBtn">
+                                    <i class="fa-solid fa-copy"></i> Copy Summary
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: DASHBOARD -->
+            <section id="tab-dashboard" class="tab-pane">
+                <div class="dashboard-header">
+                    <div>
+                        <h2 class="section-title"><i class="fa-solid fa-chart-line"></i> Analytics & Detection Trends</h2>
+                        <p class="section-subtitle">Real-time statistics from SQLite database and historical analysis distribution</p>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" id="refreshStatsBtn">
+                        <i class="fa-solid fa-arrows-rotate"></i> Refresh Analytics
+                    </button>
+                </div>
+
+                <!-- 4 Top KPI Cards -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-icon icon-blue"><i class="fa-solid fa-file-lines"></i></div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">Total Articles Analyzed</span>
+                            <h3 class="kpi-value" id="kpiTotal">0</h3>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon icon-green"><i class="fa-solid fa-shield-check"></i></div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">Classified Real / Credible</span>
+                            <h3 class="kpi-value" id="kpiReal">0</h3>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon icon-red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">Flagged Misinformation</span>
+                            <h3 class="kpi-value" id="kpiFake">0</h3>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon icon-purple"><i class="fa-solid fa-gauge-high"></i></div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">Average Credibility Score</span>
+                            <h3 class="kpi-value" id="kpiAvgScore">0%</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 Charts Grid -->
+                <div class="charts-grid">
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fa-solid fa-chart-pie"></i> Classification Breakdown</h3>
+                            <span class="card-tag">Real vs Fake</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="verdictChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fa-solid fa-chart-simple"></i> Credibility Score Distribution</h3>
+                            <span class="card-tag">Score Brackets</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="scoreDistChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card chart-card wide-chart">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fa-solid fa-chart-area"></i> Analysis Timeline & Trend</h3>
+                            <span class="card-tag">Recent Activity</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="timelineChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fa-solid fa-diagram-project"></i> Linguistic Cue Detection</h3>
+                            <span class="card-tag">Risk Factors</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="riskRadarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: HISTORY -->
+            <section id="tab-history" class="tab-pane">
+                <div class="dashboard-header">
+                    <div>
+                        <h2 class="section-title"><i class="fa-solid fa-clock-rotate-left"></i> Analysis History Log</h2>
+                        <p class="section-subtitle">Search, filter, inspect, and export verified records from the SQLite database</p>
+                    </div>
+                    <div class="header-action-group">
+                        <button class="btn btn-secondary btn-sm" id="exportCsvBtn">
+                            <i class="fa-solid fa-file-csv"></i> Export CSV
+                        </button>
+                        <button class="btn btn-secondary btn-sm" id="exportJsonBtn">
+                            <i class="fa-solid fa-file-code"></i> Export JSON
+                        </button>
+                        <button class="btn btn-danger btn-sm" id="clearAllHistoryBtn">
+                            <i class="fa-solid fa-trash-can"></i> Clear History
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card history-card">
+                    <!-- Controls Bar -->
+                    <div class="history-controls">
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="historySearchInput" placeholder="Search by headline or keywords...">
+                        </div>
+                        <div class="filter-group">
+                            <span class="filter-label">Filter:</span>
+                            <button class="filter-btn active" data-filter="all">All</button>
+                            <button class="filter-btn" data-filter="Real">Real</button>
+                            <button class="filter-btn" data-filter="Fake">Fake</button>
+                        </div>
+                    </div>
+
+                    <!-- History Table -->
+                    <div class="table-responsive">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Headline</th>
+                                    <th>Verdict</th>
+                                    <th>Credibility</th>
+                                    <th>Confidence</th>
+                                    <th>Words</th>
+                                    <th>Timestamp</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination-bar">
+                        <span class="pagination-info" id="paginationInfo">Showing 0-0 of 0 entries</span>
+                        <div class="pagination-btns" id="paginationBtns">
+                            <!-- Dynamic page buttons -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: METHODOLOGY & TRANSPARENCY -->
+            <section id="tab-methodology" class="tab-pane">
+                <div class="dashboard-header">
+                    <div>
+                        <h2 class="section-title"><i class="fa-solid fa-brain"></i> Model Architecture & Transparency</h2>
+                        <p class="section-subtitle">Methodological documentation, evaluation metrics, and responsible AI disclosures</p>
+                    </div>
+                </div>
+
+                <div class="methodology-grid">
+                    <!-- Left: Model Metrics & Confusion Matrix -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fa-solid fa-sliders"></i> Trained Classifier Performance</h3>
+                            <span class="badge badge-success">Evaluated on Held-out Test Split</span>
+                        </div>
+                        <div class="metrics-cards-row">
+                            <div class="metric-card">
+                                <span class="metric-card-label">Accuracy</span>
+                                <span class="metric-card-val" id="modelAccuracyVal">100.0%</span>
+                            </div>
+                            <div class="metric-card">
+                                <span class="metric-card-label">Precision</span>
+                                <span class="metric-card-val" id="modelPrecisionVal">100.0%</span>
+                            </div>
+                            <div class="metric-card">
+                                <span class="metric-card-label">Recall</span>
+                                <span class="metric-card-val" id="modelRecallVal">100.0%</span>
+                            </div>
+                            <div class="metric-card">
+                                <span class="metric-card-label">F1-Score</span>
+                                <span class="metric-card-val" id="modelF1Val">100.0%</span>
+                            </div>
+                        </div>
+
+                        <div class="confusion-matrix-box">
+                            <h4>Test Set Confusion Matrix</h4>
+                            <div class="cm-grid">
+                                <div class="cm-cell cm-header"></div>
+                                <div class="cm-cell cm-header">Pred: Fake</div>
+                                <div class="cm-cell cm-header">Pred: Real</div>
+                                
+                                <div class="cm-cell cm-header">Actual: Fake</div>
+                                <div class="cm-cell cm-true" id="cmTN">70 (TN)</div>
+                                <div class="cm-cell cm-false" id="cmFP">0 (FP)</div>
+                                
+                                <div class="cm-cell cm-header">Actual: Real</div>
+                                <div class="cm-cell cm-false" id="cmFN">0 (FN)</div>
+                                <div class="cm-cell cm-true" id="cmTP">70 (TP)</div>
+                            </div>
+                        </div>
+
+                        <div class="dataset-meta-list">
+                            <div class="meta-item">
+                                <span>Model Algorithm:</span>
+                                <strong>TF-IDF Vectorizer + Calibrated Logistic Regression</strong>
+                            </div>
+                            <div class="meta-item">
+                                <span>Total Dataset Samples:</span>
+                                <strong id="metaDatasetTotal">700 articles (350 Real, 350 Fake)</strong>
+                            </div>
+                            <div class="meta-item">
+                                <span>Vocabulary Size (N-Grams):</span>
+                                <strong id="metaVocabSize">2,108 distinct terms</strong>
+                            </div>
+                            <div class="meta-item">
+                                <span>Train / Test Split:</span>
+                                <strong>80% Train (560) / 20% Test (140)</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Ethics & Top Predictors -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fa-solid fa-scale-balanced"></i> Responsible AI & Estimation Disclaimer</h3>
+                        </div>
+                        <div class="prose-content">
+                            <div class="alert-box alert-warning">
+                                <i class="fa-solid fa-circle-exclamation"></i>
+                                <div>
+                                    <strong>Estimates, Not Proof of Truth:</strong>
+                                    TruthLens AI calculates statistical probabilities based on syntax, vocabulary, sentiment, and learned n-gram associations. A high credibility score does not guarantee factual truth, nor does a low credibility score constitute legal or definitive proof of falsehood.
+                                </div>
+                            </div>
+
+                            <h4>How TruthLens Evaluates Articles:</h4>
+                            <ol class="method-steps">
+                                <li><strong>N-Gram Stylometry:</strong> Analyzes unigrams and bigrams using sublinear TF-IDF scaling, identifying distinct patterns of formal reporting versus sensationalist hyperbole.</li>
+                                <li><strong>Linguistic Anomaly Detection:</strong> Evaluates punctuation abuse (excessive <code>!</code> and <code>?</code>), excessive capitalization, and conspiratorial buzzwords.</li>
+                                <li><strong>Attribution & Citation Presence:</strong> Scans for quotations, named agencies (e.g. Reuters, AP, WHO), and authoritative reporting phrasing.</li>
+                                <li><strong>Probability Calibration:</strong> Softmax probability output from the logistic classifier is blended with stylistic risk adjustments to form the 0-100 Credibility Score.</li>
+                            </ol>
+
+                            <h4>Top Learned Real vs Fake Vocabulary Signals:</h4>
+                            <div class="vocab-comparison-grid">
+                                <div>
+                                    <h5 class="text-success"><i class="fa-solid fa-circle-check"></i> Highest Real Predictors</h5>
+                                    <div class="vocab-pill-list" id="topRealVocabList">
+                                        <!-- Loaded dynamically -->
+                                    </div>
+                                </div>
+                                <div>
+                                    <h5 class="text-danger"><i class="fa-solid fa-circle-xmark"></i> Highest Fake Predictors</h5>
+                                    <div class="vocab-pill-list" id="topFakeVocabList">
+                                        <!-- Loaded dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-container">
+                <div class="footer-left">
+                    <span><strong>TruthLens AI</strong> &bull; Version 1.0.0</span>
+                    <span class="footer-dot">&bull;</span>
+                    <span>Built with Python, Flask, scikit-learn, and SQLite</span>
+                </div>
+                <div class="footer-right">
+                    <span>Model predictions are algorithmic estimates. Verify news with independent fact-checking networks.</span>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Modal Dialog for Analysis Detail -->
+        <div class="modal-backdrop" id="detailModal">
+            <div class="modal-dialog">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="modalTitle">Analysis Detail</h3>
+                    <button class="modal-close-btn" id="modalCloseBtn">&times;</button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Populated dynamically -->
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" id="modalShareBtn">
+                        <i class="fa-solid fa-share-nodes"></i> Share Report
+                    </button>
+                    <button class="btn btn-secondary btn-sm" id="modalCloseFooterBtn">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Dialog for Share Options -->
+        <div class="modal-backdrop" id="shareModal">
+            <div class="modal-dialog share-modal-dialog">
+                <div class="modal-header">
+                    <h3 class="modal-title"><i class="fa-solid fa-share-nodes text-primary"></i> Share Credibility Report</h3>
+                    <button class="modal-close-btn" id="shareModalCloseBtn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <!-- Share Summary Card Preview -->
+                    <div class="share-preview-card" id="sharePreviewCard">
+                        <div class="share-preview-header">
+                            <span class="badge" id="shareVerdictBadge">Real</span>
+                            <span class="share-score-chip" id="shareScoreChip">88% Credibility</span>
+                        </div>
+                        <p class="share-preview-headline" id="shareHeadlinePreview">Headline Preview</p>
+                    </div>
+
+                    <!-- Direct Link with Copy Button -->
+                    <div class="share-section">
+                        <label class="share-section-label">Shareable Link</label>
+                        <div class="copy-link-group">
+                            <input type="text" id="shareUrlInput" readonly placeholder="https://...">
+                            <button type="button" class="btn btn-secondary btn-sm" id="copyShareUrlBtn">
+                                <i class="fa-solid fa-copy"></i> Copy Link
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Native System Share (Web Share API) -->
+                    <div id="nativeShareContainer" style="display: none; margin-bottom: 0.85rem;">
+                        <button type="button" class="btn btn-primary w-100" id="nativeShareBtn">
+                            <i class="fa-solid fa-arrow-up-from-bracket"></i> Share via Device Share Sheet
+                        </button>
+                    </div>
+
+                    <!-- Social Platform Share Buttons -->
+                    <div class="share-section">
+                        <label class="share-section-label">Share to Social & Messaging</label>
+                        <div class="social-share-grid">
+                            <a href="#" target="_blank" rel="noopener noreferrer" class="social-btn social-twitter" id="shareTwitterBtn" title="Share on X (Twitter)">
+                                <i class="fa-brands fa-x-twitter"></i>
+                                <span>X / Twitter</span>
+                            </a>
+                            <a href="#" target="_blank" rel="noopener noreferrer" class="social-btn social-whatsapp" id="shareWhatsappBtn" title="Share on WhatsApp">
+                                <i class="fa-brands fa-whatsapp"></i>
+                                <span>WhatsApp</span>
+                            </a>
+                            <a href="#" target="_blank" rel="noopener noreferrer" class="social-btn social-linkedin" id="shareLinkedinBtn" title="Share on LinkedIn">
+                                <i class="fa-brands fa-linkedin-in"></i>
+                                <span>LinkedIn</span>
+                            </a>
+                            <a href="#" target="_blank" rel="noopener noreferrer" class="social-btn social-telegram" id="shareTelegramBtn" title="Share on Telegram">
+                                <i class="fa-brands fa-telegram"></i>
+                                <span>Telegram</span>
+                            </a>
+                            <a href="#" target="_blank" rel="noopener noreferrer" class="social-btn social-email" id="shareEmailBtn" title="Share via Email">
+                                <i class="fa-solid fa-envelope"></i>
+                                <span>Email</span>
+                            </a>
+                            <button type="button" class="social-btn social-copy" id="copyReportTextBtn" title="Copy Full Text Report">
+                                <i class="fa-solid fa-clipboard-check"></i>
+                                <span>Copy Text</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="share-disclaimer">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>Shared reports include the methodological disclaimer that predictions are probabilistic AI estimates.</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary btn-sm" id="shareModalCloseFooterBtn">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notification Container -->
+        <div class="toast-container" id="toastContainer"></div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/charts.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

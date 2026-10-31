@@ -1,0 +1,142 @@
+{
+  "model_type": "TF-IDF + Calibrated Logistic Regression",
+  "dataset_total": 700,
+  "train_samples": 560,
+  "test_samples": 140,
+  "vocabulary_size": 2108,
+  "accuracy": 100.0,
+  "precision": 100.0,
+  "recall": 100.0,
+  "f1_score": 100.0,
+  "confusion_matrix": {
+    "true_negatives_fake": 70,
+    "false_positives_real": 0,
+    "false_negatives_fake": 0,
+    "true_positives_real": 70
+  },
+  "top_real_indicators": [
+    {
+      "word": "regulatory",
+      "weight": 0.773121221487803
+    },
+    {
+      "word": "reports",
+      "weight": 0.7492034380073394
+    },
+    {
+      "word": "national",
+      "weight": 0.7462983583921179
+    },
+    {
+      "word": "percent",
+      "weight": 0.6983182744097189
+    },
+    {
+      "word": "health",
+      "weight": 0.6828672032601651
+    },
+    {
+      "word": "new",
+      "weight": 0.6827982096966991
+    },
+    {
+      "word": "data",
+      "weight": 0.6730044824421643
+    },
+    {
+      "word": "officials",
+      "weight": 0.6649693640068214
+    },
+    {
+      "word": "safety",
+      "weight": 0.6649180039796108
+    },
+    {
+      "word": "standards",
+      "weight": 0.6598423868666342
+    },
+    {
+      "word": "findings",
+      "weight": 0.6517426923269642
+    },
+    {
+      "word": "progress",
+      "weight": 0.6470065219262896
+    },
+    {
+      "word": "research",
+      "weight": 0.6228593560874992
+    },
+    {
+      "word": "agreement",
+      "weight": 0.6181728314770452
+    },
+    {
+      "word": "international",
+      "weight": 0.6034199937192606
+    }
+  ],
+  "top_fake_indicators": [
+    {
+      "word": "secret",
+      "weight": 1.155779237077235
+    },
+    {
+      "word": "ancient",
+      "weight": 0.8657946692907389
+    },
+    {
+      "word": "using",
+      "weight": 0.8312530905817019
+    },
+    {
+      "word": "proof",
+      "weight": 0.8245853784796549
+    },
+    {
+      "word": "ordinary",
+      "weight": 0.6887914934731321
+    },
+    {
+      "word": "salt",
+      "weight": 0.6563986709926877
+    },
+    {
+      "word": "completely",
+      "weight": 0.6433415719018437
+    },
+    {
+      "word": "unbelievable",
+      "weight": 0.6375945557157077
+    },
+    {
+      "word": "bombshell",
+      "weight": 0.6372581004842884
+    },
+    {
+      "word": "exposed",
+      "weight": 0.6361940794735361
+    },
+    {
+      "word": "miracle",
+      "weight": 0.6360215999274366
+    },
+    {
+      "word": "discovered",
+      "weight": 0.6321908990751384
+    },
+    {
+      "word": "terrified",
+      "weight": 0.621375275542754
+    },
+    {
+      "word": "ordinary household",
+      "weight": 0.5958844858082187
+    },
+    {
+      "word": "household",
+      "weight": 0.5958844858082187
+    }
+  ],
+  "trained_at": "2026-10-31 05:54:43 UTC"
+}
